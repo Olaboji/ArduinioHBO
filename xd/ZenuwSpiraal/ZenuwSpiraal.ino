@@ -1,18 +1,23 @@
 #include <TimerOne.h>
 #include <Wire.h>
 #include <MultiFuncShield.h>
-
+/*Omdat low en high ongewisseld zijn hebben wij onze eigen low en high constanten
+   geimplementeerd
+*/
 const int low = 1;
 const int high = 0;
 
+//geheugen
 static bool gstart = false;
 static bool gdraad = false;
 static bool geind = false;
 
+//leds
 const int LSTART = 10;
 const int LDRAAD = 11;
 const int LEIND = 12;
 
+//inputs
 int startt = A1;
 int draad = A2;
 int eind = A3;
@@ -32,13 +37,10 @@ void setup() {
   pinMode(draad, INPUT);
   pinMode(eind, INPUT);
 
+  //pieper
   pinMode(3, OUTPUT);
-
-  digitalWrite(LSTART, low);
-  digitalWrite(LDRAAD, low);
-  digitalWrite(LEIND, low);
-
 }
+//Led gaat aan of uit afhankelijk van de waarde van de geheugen
 void ledOnOF(bool geheugen, int led) {
   if (geheugen == true) {
     digitalWrite(led, high);
@@ -46,13 +48,7 @@ void ledOnOF(bool geheugen, int led) {
     digitalWrite(led, low);
   }
 }
-void startTimer(bool geheugen) {
-  tijd = millis();
 
-}
-void resetTimer() {
-  tijd = millis();
-}
 void loop() {
   if (digitalRead(startt) == high) {
     gstart = true;
@@ -79,13 +75,15 @@ void loop() {
   if (digitalRead(startt) == high) {
     tijd = millis();
     refTime = millis();
+    ftijd=0.00;
   }
 
-  tijd = millis();
-  ftijd = (tijd - refTime) / 1000.00;
-  if (gdraad == true || geind == true) {
+
+  if (gdraad == true || geind == true || ftijd == 99.99) {
     //pause
   } else {
+    tijd = millis();
+    ftijd = (tijd - refTime) / 1000.00;
     MFS.write(ftijd, 2);
   }
   //pieper
