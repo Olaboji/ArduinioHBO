@@ -25,9 +25,12 @@ int eind = A3;
 static unsigned long tijd = 0;
 unsigned long refTime = 0 ;
 float ftijd = 0;
+unsigned long t = 0;
+unsigned long dt = 0;
 
-int rounds = 3;
+int rounds = 1;
 static float highscore = 100.00;
+
 void setup() {
   Timer1.initialize();
   MFS.initialize(&Timer1);
@@ -54,11 +57,20 @@ void ledOnOF(bool geheugen, int led) {
 
 
 void loop() {
-  while (rounds > 0) {
+  while (rounds < 4) {
+   
+    MFS.write(rounds);
     if (digitalRead(startt) == high) {
       gstart = true;
       gdraad  = false;
       geind = false;
+    }
+    if (gdraad == true || geind == true || ftijd == 99.99) {
+      //pause
+    } else {
+      tijd = millis();
+      ftijd = (tijd - refTime) / 1000.00;
+      //MFS.write(ftijd, 2);
     }
     if (digitalRead(draad) == high || digitalRead(eind) == high) {
       gstart = false;
@@ -75,23 +87,14 @@ void loop() {
           geind = false;
         } else {
           geind = true;
+          if (ftijd < highscore) {
+            highscore = ftijd;
+          }
         }
       }
     }
-    if (digitalRead(startt) == high) {
-      tijd = millis();
-      refTime = millis();
-      ftijd = 0.00;
-    }
 
 
-    if (gdraad == true || geind == true || ftijd == 99.99) {
-      //pause
-    } else {
-      tijd = millis();
-      ftijd = (tijd - refTime) / 1000.00;
-      MFS.write(ftijd, 2);
-    }
     //pieper
     if (geind == false) {
       if (digitalRead(draad) == high) {
@@ -100,19 +103,29 @@ void loop() {
         digitalWrite(3, low);
       }
     }
-    if (ground == true && rounds == 1) {
-      rounds == 3;
+    if (digitalRead(startt) == high) {
+      tijd = millis();
+      refTime = millis();
+      ftijd = 0.00;
+    }
+
+    if (ground == true && rounds == 3) {
+      rounds = 0;
       break;
-    } else if (ground == true && gstart == true){
-      rounds--;
+    } else if (ground == true && gstart == true) {
+      rounds++;
       ground = false;
     }
+
 
     ledOnOF(gstart, LSTART);
     ledOnOF(gdraad, LDRAAD);
     ledOnOF(geind, LEIND);
 
+    
   }
-  MFS.write("fini");
+  MFS.write("Eind");
+  delay(1000);
+  MFS.write(highscore, 2);
   delay(1000);
 }
