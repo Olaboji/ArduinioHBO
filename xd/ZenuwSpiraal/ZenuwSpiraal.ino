@@ -23,12 +23,10 @@ int draad = A2;
 int eind = A3;
 
 static unsigned long tijd = 0;
-unsigned long refTime = 0 ;
+unsigned long refTijd = 0 ;
 float ftijd = 0;
-unsigned long t = 0;
-unsigned long dt = 0;
 
-int rounds = 1;
+int ronde = 1;
 static float highscore = 100.00;
 
 void setup() {
@@ -57,9 +55,9 @@ void ledOnOF(bool geheugen, int led) {
 
 
 void loop() {
-  while (rounds < 4) {
+  while (ronde < 4) {
    
-    MFS.write(rounds);
+    MFS.write(ronde);
     if (digitalRead(startt) == high) {
       gstart = true;
       gdraad  = false;
@@ -69,7 +67,7 @@ void loop() {
       //pause
     } else {
       tijd = millis();
-      ftijd = (tijd - refTime) / 1000.00;
+      ftijd = (tijd - refTijd) / 1000.00;
       //MFS.write(ftijd, 2);
     }
     if (digitalRead(draad) == high || digitalRead(eind) == high) {
@@ -105,15 +103,15 @@ void loop() {
     }
     if (digitalRead(startt) == high) {
       tijd = millis();
-      refTime = millis();
+      refTijd = millis();
       ftijd = 0.00;
     }
 
-    if (ground == true && rounds == 3) {
-      rounds = 0;
+    if (ground == true && ronde == 3) {
+      ronde = 0;
       break;
     } else if (ground == true && gstart == true) {
-      rounds++;
+      ronde++;
       ground = false;
     }
 
