@@ -24,11 +24,13 @@ int eind = A3;
 
 static unsigned long tijd = 0;
 unsigned long refTijd = 0 ;
+unsigned long pieptijd = 0;
+unsigned long refpieptijd = 0;
 float ftijd = 0;
 
 int ronde = 1;
 static float highscore = 100.00;
-
+char poging[4][4] = {"----", "pog1", "pog2", "pog3"};
 void setup() {
   Timer1.initialize();
   MFS.initialize(&Timer1);
@@ -56,8 +58,8 @@ void ledOnOF(bool geheugen, int led) {
 
 void loop() {
   while (ronde < 4) {
-   
-    MFS.write(ronde);
+
+    MFS.write(poging[ronde]);
     if (digitalRead(startt) == high) {
       gstart = true;
       gdraad  = false;
@@ -91,13 +93,18 @@ void loop() {
         }
       }
     }
-
+    pieptijd = millis();
 
     //pieper
     if (geind == false) {
-      if (digitalRead(draad) == high) {
+
+      if (digitalRead(draad) == high   ) {
         digitalWrite(3, high);
-      } else {
+        refpieptijd = millis();
+      } else if (pieptijd - refpieptijd < 100) {
+         digitalWrite(3, high);
+      }
+      else {
         digitalWrite(3, low);
       }
     }
@@ -120,7 +127,7 @@ void loop() {
     ledOnOF(gdraad, LDRAAD);
     ledOnOF(geind, LEIND);
 
-    
+
   }
   MFS.write("Eind");
   delay(1000);
