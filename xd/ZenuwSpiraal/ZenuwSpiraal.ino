@@ -22,8 +22,8 @@ int startt = A1;
 int draad = A2;
 int eind = A3;
 
-//button
-int RESET = A1;
+unsigned long t = 0;
+unsigned long dt = 0;
 
 static unsigned long tijd = 0;
 unsigned long refTijd = 0 ;
@@ -66,7 +66,16 @@ void loop() {
   //pieper
 
   if (poging != 4) {
-  
+  dt = millis();
+      if (dt - t < 2000) {
+        MFS.write("Raak");
+        MFS.blinkDisplay(DIGIT_ALL, ON);
+      } else if (dt - t >= 2000 && dt - t < 4000) {
+        MFS.write("PLAY");
+        MFS.blinkDisplay(DIGIT_ALL, ON);
+      } else {
+        t = millis();
+      }
     if (digitalRead(startt) == high) {
       ftijd = 0;
 
@@ -137,8 +146,8 @@ void loop() {
      digitalWrite(pog1, low);
     digitalWrite(pog2, low);
     digitalWrite(pog3, low);
-    unsigned long t = millis();
-    unsigned long dt = 0;
+     t = millis();
+     dt = 0;
     bool gedrukt = true;
    
     while (gedrukt == true) {
