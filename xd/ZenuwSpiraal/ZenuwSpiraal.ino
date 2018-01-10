@@ -58,7 +58,22 @@ void toonhighscore() {
   MFS.blinkDisplay(DIGIT_ALL, OFF); // display knipperen laten stoppen
   MFS.write(gameHighscore, 2);
 }
+void toonpoging(){
+   if (poging == 1) {
 
+      digitalWrite(pog1, low);
+      digitalWrite(pog2, low);
+      digitalWrite(pog3, high);
+    } else if (poging == 2) {
+      digitalWrite(pog1, low);
+      digitalWrite(pog2, high);
+      digitalWrite(pog3, high);
+    } else {
+      digitalWrite(pog1, high);
+      digitalWrite(pog2, high);
+      digitalWrite(pog3, high);
+    }
+}
 
 
 void loop() {
@@ -68,7 +83,7 @@ void loop() {
   if (poging != 4) {
   dt = millis();
       if (dt - t < 2000) {
-        MFS.write("Raak");
+        MFS.write("PRESS");
         MFS.blinkDisplay(DIGIT_ALL, ON);
       } else if (dt - t >= 2000 && dt - t < 4000) {
         MFS.write("PLAY");
@@ -77,6 +92,7 @@ void loop() {
         t = millis();
       }
     if (digitalRead(startt) == high) {
+      MFS.blinkDisplay(DIGIT_ALL,OFF);
       ftijd = 0;
 
       gstart = true;
@@ -93,20 +109,7 @@ void loop() {
       digitalWrite(3, high);
       delay(500);
       digitalWrite(3, low);
-        if (poging == 1) {
-
-      digitalWrite(pog1, low);
-      digitalWrite(pog2, low);
-      digitalWrite(pog3, high);
-    } else if (poging == 2) {
-      digitalWrite(pog1, low);
-      digitalWrite(pog2, high);
-      digitalWrite(pog3, high);
-    } else {
-      digitalWrite(pog1, high);
-      digitalWrite(pog2, high);
-      digitalWrite(pog3, high);
-    }
+      toonpoging();
       refTijd = millis();
 
       while (true) {
