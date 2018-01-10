@@ -47,15 +47,19 @@ void setup() {
 
 void toonhighscore() {
   char str[] = "Highscore   ";
-  
+  MFS.blinkDisplay(DIGIT_ALL, OFF);
 
   for (int i = 0; i < 9; i++) {
     MFS.write(str[i], 0);
     MFS.write(str[i + 1], 1);
     MFS.write(str[i + 2], 2);
     MFS.write(str[i + 3], 3);
-    delay(500);
+    delay(200);
   }
+  MFS.blinkDisplay(DIGIT_ALL, ON);
+  MFS.write(gameHighscore,2);
+  delay(1500);
+  MFS.blinkDisplay(DIGIT_ALL, OFF);
 }
 
 void toonpoging() {
