@@ -12,6 +12,7 @@ static bool gstart = false;
 static bool gdraad = false;
 static bool geind = false;
 static bool ground = false;
+static bool gcountdown = false;
 //leds
 const int LSTART = 10;
 const int LDRAAD = 11;
@@ -58,19 +59,25 @@ void ledOnOF(bool geheugen, int led) {
 
 void loop() {
   while (ronde < 4) {
+    //pieper
 
-    MFS.write(poging[ronde]);
+
     if (digitalRead(startt) == high) {
       gstart = true;
       gdraad  = false;
       geind = false;
     }
+
     if (gdraad == true || geind == true || ftijd == 99.99) {
       //pause
     } else {
       tijd = millis();
       ftijd = (tijd - refTijd) / 1000.00;
-      //MFS.write(ftijd, 2);
+    }
+    if (gstart == true) {
+      MFS.write(poging[ronde]);
+    } else if (gstart == false) {
+      MFS.write(ftijd, 2);
     }
     if (digitalRead(draad) == high || digitalRead(eind) == high) {
       gstart = false;
@@ -102,7 +109,7 @@ void loop() {
         digitalWrite(3, high);
         refpieptijd = millis();
       } else if (pieptijd - refpieptijd < 100) {
-         digitalWrite(3, high);
+        digitalWrite(3, high);
       }
       else {
         digitalWrite(3, low);
