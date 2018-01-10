@@ -23,6 +23,8 @@ int startt = A1;
 int draad = A2;
 int eind = A3;
 
+//button 
+int S1;
 static unsigned long tijd = 0;
 unsigned long refTijd = 0 ;
 unsigned long pieptijd = 0;
@@ -31,6 +33,7 @@ float ftijd = 0;
 
 int ronde = 1;
 static float highscore = 100.00;
+static float gameHighscore = 100.00;
 char poging[4][4] = {"----", "pog1", "pog2", "pog3"};
 void setup() {
   Timer1.initialize();
@@ -43,7 +46,7 @@ void setup() {
   pinMode(startt, INPUT);
   pinMode(draad, INPUT);
   pinMode(eind, INPUT);
-
+  
   //pieper
   pinMode(3, OUTPUT);
 }
@@ -54,35 +57,45 @@ void ledOnOF(bool geheugen, int led) {
   } else {
     digitalWrite(led, low);
   }
+  
+}
+void toonhighscore(){
+ if(highscore < gameHighscore ){
+  gameHighscore = highscore;
+ }
+ MFS.blinkDisplay(DIGIT_ALL, ON); // display laten knipperen
+  delay(500);
+  MFS.blinkDisplay(DIGIT_ALL, OFF); // display knipperen laten stoppen
+  MFS.write(gameHighscore,2);
 }
 
 
 void loop() {
   while (ronde < 4) {
     //pieper
-
+  
 
     if (digitalRead(startt) == high) {
       gstart = true;
       gdraad  = false;
       geind = false;
+      MFS.write(poging[ronde]);
+    }else{
+      MFS.write(ftijd, 2);
     }
 
     if (gdraad == true || geind == true || ftijd == 99.99) {
-      //pause
+      
     } else {
       tijd = millis();
       ftijd = (tijd - refTijd) / 1000.00;
+      
     }
-    if (gstart == true) {
-      MFS.write(poging[ronde]);
-    } else if (gstart == false) {
-      MFS.write(ftijd, 2);
-    }
+  
     if (digitalRead(draad) == high || digitalRead(eind) == high) {
       gstart = false;
       ground = true;
-      if (digitalRead(draad) == high) {
+      if (digitalRead(draad) == high && digitalRead(startt)==low) {
         if (geind == true) {
           gdraad = false;
         } else {
@@ -140,4 +153,5 @@ void loop() {
   delay(1000);
   MFS.write(highscore, 2);
   delay(1000);
+  ftijd = highscore;
 }
