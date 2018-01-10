@@ -7,10 +7,6 @@
 const int low = 1;
 const int high = 0;
 
-//geheugen
-static bool gstart = false;
-static bool gdraad = false;
-static bool geind = false;
 
 //leds
 const int pog1 = 10;
@@ -50,29 +46,33 @@ void setup() {
 }
 
 void toonhighscore() {
-  if (highscore < gameHighscore ) {
-    gameHighscore = highscore;
-  }
-  MFS.blinkDisplay(DIGIT_ALL, ON); // display laten knipperen
-  delay(500);
-  MFS.blinkDisplay(DIGIT_ALL, OFF); // display knipperen laten stoppen
-  MFS.write(gameHighscore, 2);
-}
-void toonpoging(){
-   if (poging == 1) {
+  char str[] = "Highscore   ";
+  
 
-      digitalWrite(pog1, low);
-      digitalWrite(pog2, low);
-      digitalWrite(pog3, high);
-    } else if (poging == 2) {
-      digitalWrite(pog1, low);
-      digitalWrite(pog2, high);
-      digitalWrite(pog3, high);
-    } else {
-      digitalWrite(pog1, high);
-      digitalWrite(pog2, high);
-      digitalWrite(pog3, high);
-    }
+  for (int i = 0; i < 9; i++) {
+    MFS.write(str[i], 0);
+    MFS.write(str[i + 1], 1);
+    MFS.write(str[i + 2], 2);
+    MFS.write(str[i + 3], 3);
+    delay(500);
+  }
+}
+
+void toonpoging() {
+  if (poging == 1) {
+
+    digitalWrite(pog1, low);
+    digitalWrite(pog2, low);
+    digitalWrite(pog3, high);
+  } else if (poging == 2) {
+    digitalWrite(pog1, low);
+    digitalWrite(pog2, high);
+    digitalWrite(pog3, high);
+  } else {
+    digitalWrite(pog1, high);
+    digitalWrite(pog2, high);
+    digitalWrite(pog3, high);
+  }
 }
 
 
@@ -81,31 +81,32 @@ void loop() {
   //pieper
 
   if (poging != 4) {
-  dt = millis();
-      if (dt - t < 2000) {
-        MFS.write("PRESS");
-        MFS.blinkDisplay(DIGIT_ALL, ON);
-      } else if (dt - t >= 2000 && dt - t < 4000) {
-        MFS.write("PLAY");
-        MFS.blinkDisplay(DIGIT_ALL, ON);
-      } else {
-        t = millis();
-      }
+    dt = millis();
+    if (dt - t < 2000) {
+      MFS.write("PRESS");
+      MFS.blinkDisplay(DIGIT_ALL, ON);
+    } else if (dt - t >= 2000 && dt - t < 4000) {
+      MFS.write("PLAY");
+      MFS.blinkDisplay(DIGIT_ALL, ON);
+    } else {
+      t = millis();
+    }
+    if (digitalRead(draad)==high){
+      toonhighscore();
+    }
     if (digitalRead(startt) == high) {
-      MFS.blinkDisplay(DIGIT_ALL,OFF);
+      MFS.blinkDisplay(DIGIT_ALL, OFF);
       ftijd = 0;
 
-      gstart = true;
-      gdraad  = false;
-      geind = false;
-      for (int i = 3; i >0; i--) {
+
+      for (int i = 3; i > 0; i--) {
         MFS.write(i);
         digitalWrite(3, high);
         delay(250);
         digitalWrite(3, low);
         delay(250);
       }
-      MFS.write("GO",2);
+      MFS.write("GO", 2);
       digitalWrite(3, high);
       delay(500);
       digitalWrite(3, low);
@@ -115,7 +116,7 @@ void loop() {
       while (true) {
 
         MFS.write(ftijd, 2);
-        if (gdraad == true || geind == true || ftijd == 99.99) {
+        if ( ftijd == 99.99) {
 
         } else {
           tijd = millis();
@@ -146,15 +147,19 @@ void loop() {
       }
     }
   } else {
-     digitalWrite(pog1, low);
+    if (highscore < gameHighscore ) {
+      gameHighscore = highscore;
+    }
+
+    digitalWrite(pog1, low);
     digitalWrite(pog2, low);
     digitalWrite(pog3, low);
-     t = millis();
-     dt = 0;
+    t = millis();
+    dt = 0;
     bool gedrukt = true;
-   
+
     while (gedrukt == true) {
-      if(digitalRead(draad) == high || digitalRead(startt) == high || digitalRead(eind) == high){
+      if (digitalRead(draad) == high || digitalRead(startt) == high || digitalRead(eind) == high) {
         gedrukt = false;
       }
       dt = millis();
@@ -162,11 +167,11 @@ void loop() {
         MFS.write("EIND");
         MFS.blinkDisplay(DIGIT_ALL, ON);
       } else if (dt - t >= 2000 && dt - t < 4000) {
-        MFS.write(highscore,2);
+        MFS.write(highscore, 2);
         MFS.blinkDisplay(DIGIT_ALL, OFF);
       } else {
         t = millis();
       }
-    }poging =1;
+    } poging = 1;
   }
 }
