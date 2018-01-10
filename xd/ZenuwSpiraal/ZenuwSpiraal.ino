@@ -112,6 +112,9 @@ void loop() {
           }
         }
       }
+      tijd = millis();
+      refTijd = millis();
+      ftijd = 0.00;
     }
     pieptijd = millis();
 
@@ -127,11 +130,6 @@ void loop() {
       else {
         digitalWrite(3, low);
       }
-    }
-    if (digitalRead(startt) == high) {
-      tijd = millis();
-      refTijd = millis();
-      ftijd = 0.00;
     }
 
     if (ground == true && ronde == 3) {
