@@ -18,9 +18,11 @@ int startt = A1;
 int draad = A2;
 int eind = A3;
 
+//houdt tijd verschil bij 
 unsigned long t = 0;
 unsigned long dt = 0;
 
+//houdt tijd bij highscore
 static unsigned long tijd = 0;
 unsigned long refTijd = 0 ;
 float ftijd = 0;
@@ -32,11 +34,12 @@ static float gameHighscore = 100.00;
 void setup() {
   Timer1.initialize();
   MFS.initialize(&Timer1);
-
+//poging ledjes
   pinMode(pog1, OUTPUT);
   pinMode(pog2, OUTPUT);
   pinMode(pog3, OUTPUT);
 
+//buttons
   pinMode(startt, INPUT);
   pinMode(draad, INPUT);
   pinMode(eind, INPUT);
@@ -44,7 +47,7 @@ void setup() {
   //pieper
   pinMode(3, OUTPUT);
 }
-
+//toont de highscore 
 void toonhighscore() {
   char str[] = "Highscore   ";
   MFS.blinkDisplay(DIGIT_ALL, OFF);
@@ -61,7 +64,7 @@ void toonhighscore() {
   delay(1500);
   MFS.blinkDisplay(DIGIT_ALL, OFF);
 }
-
+//toont de poging met de ledjes 
 void toonpoging() {
   if (poging == 1) {
 
@@ -82,10 +85,10 @@ void toonpoging() {
 
 void loop() {
 
-  //pieper
-
+  //houdt bij welke poging 
   if (poging != 4) {
     dt = millis();
+    //Wisselt tussen PRESS and PLAY elke 2000 ms
     if (dt - t < 2000) {
       MFS.write("PRESS");
       MFS.blinkDisplay(DIGIT_ALL, ON);
@@ -95,14 +98,16 @@ void loop() {
     } else {
       t = millis();
     }
+    //toont highscore 
     if (digitalRead(draad)==high){
       toonhighscore();
     }
+    //begint poging 
     if (digitalRead(startt) == high) {
       MFS.blinkDisplay(DIGIT_ALL, OFF);
       ftijd = 0;
 
-
+       //piep aftellen en countdown op led display 
       for (int i = 3; i > 0; i--) {
         MFS.write(i);
         digitalWrite(3, high);
@@ -110,6 +115,7 @@ void loop() {
         digitalWrite(3, low);
         delay(250);
       }
+      //GO!
       MFS.write("GO", 2);
       digitalWrite(3, high);
       delay(500);
@@ -118,7 +124,7 @@ void loop() {
       refTijd = millis();
 
       while (true) {
-
+        //stopt wanneer tijd 99.99
         MFS.write(ftijd, 2);
         if ( ftijd == 99.99) {
 
@@ -127,8 +133,9 @@ void loop() {
           ftijd = (tijd - refTijd) / 1000.00;
 
         }
+        //breakt wanneer draad geraakt woord 
         if (digitalRead(draad) == high ) {
-
+          //biept voor 200 ms zodat je het kan horen
           digitalWrite(3, high);
           delay(200);
           digitalWrite(3, low);
@@ -137,7 +144,7 @@ void loop() {
         }
 
         if (digitalRead(eind) == high) {
-
+          //slaat de tijd op als het de snelste tijd was 
           if (ftijd < highscore) {
             highscore = ftijd;
           }
@@ -151,6 +158,7 @@ void loop() {
       }
     }
   } else {
+    //slaat de snelste 
     if (highscore < gameHighscore ) {
       gameHighscore = highscore;
     }
