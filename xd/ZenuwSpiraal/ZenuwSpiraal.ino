@@ -163,7 +163,7 @@ void loop() {
     bool gedrukt = true;
 
     while (gedrukt == true) {
-      if (digitalRead(draad) == high || digitalRead(startt) == high || digitalRead(eind) == high) {
+      if ( digitalRead(eind) == high) {
         gedrukt = false;
       }
       dt = millis();
