@@ -3,7 +3,7 @@
  *  A2 is voor de highscore 
  *  A3 is om naar de ronde scherm te gaan, met A1 en A2 kan je de hoeveelheid rondes bepalen. Door a3 weer te drukken verlaat je de rondes
    
-    Door Hubert Do (17078660) en Olasoji makinwa (17029139);
+    Door  Do (17078660) en  Makinwa (17029139);
 
 
 */
