@@ -1,3 +1,10 @@
+/*zenuwspiraal
+ * Door Hubert Do en Olasoji Makinwa
+ * S1 is start
+ * S2 is draad en highscore(als de Press start getoont displayed wordt) 
+ * S3 is eind en reset(als de EIND highscore waarde displayed wordt)
+ */
+
 #include <TimerOne.h>
 #include <Wire.h>
 #include <MultiFuncShield.h>
@@ -29,6 +36,8 @@ float ftijd = 0;
 
 static int poging = 1;
 //highscore is undifined als er geen highscore is 
+//gamehighscore wordt geupdate elke keer 3 pogingen gedaan zijn 
+//highscore wordt elke poging geupdate
 static float gameHighscore = 100.00;
 static float highscore = 100.00;
 void setup() {
