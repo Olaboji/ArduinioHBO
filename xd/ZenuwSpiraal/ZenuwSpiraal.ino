@@ -28,7 +28,7 @@ unsigned long refTijd = 0 ;
 float ftijd = 0;
 
 static int poging = 1;
-static float highscore = 100.00;
+
 static float gameHighscore = 100.00;
 
 void setup() {
@@ -84,7 +84,8 @@ void toonpoging() {
 
 
 void loop() {
-
+   //highscore is undefined wanneer er geen highscore is 
+   static float highscore = 100.00;
   //houdt bij welke poging 
   if (poging != 4) {
     dt = millis();
@@ -121,8 +122,9 @@ void loop() {
       delay(500);
       digitalWrite(3, low);
       toonpoging();
+      //relatieve tijd = 0; 
       refTijd = millis();
-
+      //oneindige loop tot break.
       while (true) {
         //stopt wanneer tijd 99.99
         MFS.write(ftijd, 2);
@@ -133,7 +135,7 @@ void loop() {
           ftijd = (tijd - refTijd) / 1000.00;
 
         }
-        //breakt wanneer draad geraakt woord 
+        //breakt wanneer draad geraakt word 
         if (digitalRead(draad) == high ) {
           //biept voor 200 ms zodat je het kan horen
           digitalWrite(3, high);
@@ -142,7 +144,7 @@ void loop() {
           poging++;
           break;
         }
-
+        //breakt wanneer eind geraakt wordt en kijkt als hjet een highscore is 
         if (digitalRead(eind) == high) {
           //slaat de tijd op als het de snelste tijd was 
           if (ftijd < highscore) {
@@ -158,11 +160,11 @@ void loop() {
       }
     }
   } else {
-    //slaat de snelste 
+    //slaat de snelste tijd op van alle games
     if (highscore < gameHighscore ) {
       gameHighscore = highscore;
     }
-
+    //alle leds uit
     digitalWrite(pog1, low);
     digitalWrite(pog2, low);
     digitalWrite(pog3, low);
@@ -170,10 +172,12 @@ void loop() {
     dt = 0;
     bool gedrukt = true;
 
+    //wacht tot en met de gebruiker de 'gedrukt' knop drukt en reset de poging daarna
     while (gedrukt == true) {
       if ( digitalRead(eind) == high) {
         gedrukt = false;
       }
+      //Wisselt tussen EIND en de highscore waarde elke 2000 ms
       dt = millis();
       if (dt - t < 2000) {
         MFS.write("EIND");
@@ -184,6 +188,7 @@ void loop() {
       } else {
         t = millis();
       }
-    } poging = 1;
+    }//reset poging 
+    poging = 1;
   }
 }
