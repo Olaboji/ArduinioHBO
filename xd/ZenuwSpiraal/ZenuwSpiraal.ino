@@ -18,7 +18,7 @@ int startt = A1;
 int draad = A2;
 int eind = A3;
 
-//houdt tijd verschil bij 
+//houdt tijd verschil bij
 unsigned long t = 0;
 unsigned long dt = 0;
 
@@ -28,18 +28,18 @@ unsigned long refTijd = 0 ;
 float ftijd = 0;
 
 static int poging = 1;
-
+//highscore is undifined als er geen highscore is 
 static float gameHighscore = 100.00;
-
+static float highscore = 100.00;
 void setup() {
   Timer1.initialize();
   MFS.initialize(&Timer1);
-//poging ledjes
+  //poging ledjes
   pinMode(pog1, OUTPUT);
   pinMode(pog2, OUTPUT);
   pinMode(pog3, OUTPUT);
 
-//buttons
+  //buttons
   pinMode(startt, INPUT);
   pinMode(draad, INPUT);
   pinMode(eind, INPUT);
@@ -47,11 +47,12 @@ void setup() {
   //pieper
   pinMode(3, OUTPUT);
 }
-//toont de highscore 
+//toont de highscore
 void toonhighscore() {
   char str[] = "Highscore   ";
   MFS.blinkDisplay(DIGIT_ALL, OFF);
-
+  //print een voor een de waardes in de charr aray uit 
+  //hiermee krijg je een bewegende 'string' op het led display
   for (int i = 0; i < 9; i++) {
     MFS.write(str[i], 0);
     MFS.write(str[i + 1], 1);
@@ -60,11 +61,11 @@ void toonhighscore() {
     delay(200);
   }
   MFS.blinkDisplay(DIGIT_ALL, ON);
-  MFS.write(gameHighscore,2);
+  MFS.write(gameHighscore, 2);
   delay(1500);
   MFS.blinkDisplay(DIGIT_ALL, OFF);
 }
-//toont de poging met de ledjes 
+//toont de poging met de ledjes
 void toonpoging() {
   if (poging == 1) {
 
@@ -84,9 +85,8 @@ void toonpoging() {
 
 
 void loop() {
-   //highscore is undefined wanneer er geen highscore is 
-   static float highscore = 100.00;
-  //houdt bij welke poging 
+
+  //houdt bij welke poging
   if (poging != 4) {
     dt = millis();
     //Wisselt tussen PRESS and PLAY elke 2000 ms
@@ -99,16 +99,16 @@ void loop() {
     } else {
       t = millis();
     }
-    //toont highscore 
-    if (digitalRead(draad)==high){
+    //toont highscore
+    if (digitalRead(draad) == high) {
       toonhighscore();
     }
-    //begint poging 
+    //begint poging
     if (digitalRead(startt) == high) {
       MFS.blinkDisplay(DIGIT_ALL, OFF);
       ftijd = 0;
 
-       //piep aftellen en countdown op led display 
+      //piep aftellen en countdown op led display
       for (int i = 3; i > 0; i--) {
         MFS.write(i);
         digitalWrite(3, high);
@@ -122,7 +122,7 @@ void loop() {
       delay(500);
       digitalWrite(3, low);
       toonpoging();
-      //relatieve tijd = 0; 
+      //relatieve tijd = 0;
       refTijd = millis();
       //oneindige loop tot break.
       while (true) {
@@ -135,7 +135,7 @@ void loop() {
           ftijd = (tijd - refTijd) / 1000.00;
 
         }
-        //breakt wanneer draad geraakt word 
+        //breakt wanneer draad geraakt word
         if (digitalRead(draad) == high ) {
           //biept voor 200 ms zodat je het kan horen
           digitalWrite(3, high);
@@ -144,9 +144,9 @@ void loop() {
           poging++;
           break;
         }
-        //breakt wanneer eind geraakt wordt en kijkt als hjet een highscore is 
+        //breakt wanneer eind geraakt wordt en kijkt als hjet een highscore is
         if (digitalRead(eind) == high) {
-          //slaat de tijd op als het de snelste tijd was 
+          //slaat de tijd op als het de snelste tijd was
           if (ftijd < highscore) {
             highscore = ftijd;
           }
@@ -188,7 +188,9 @@ void loop() {
       } else {
         t = millis();
       }
-    }//reset poging 
+    }//reset poging
     poging = 1;
+    //reset highscore
+    highscore = 100.00;
   }
 }
